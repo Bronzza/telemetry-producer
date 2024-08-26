@@ -1,0 +1,7 @@
+docker-compose up -d
+docker-compose down
+
+docker exec -it producer-kafka-1 /bin/bash
+kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic device_data --from-beginning
+kafka-console-producer.sh --broker-list localhost:9092 --topic device_data
+kafka-topics.sh --create --zookeeper zookeeper:2181 --replication-factor 1 --partitions 1 --device_data
