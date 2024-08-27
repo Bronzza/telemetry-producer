@@ -1,5 +1,7 @@
 package com.example.producer.service;
 
+import com.example.producer.model.TelemetryMessage;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.core.KafkaTemplate;
@@ -11,26 +13,34 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
+import static com.example.producer.config.KafkaConfig.TELEMETRY_TOPIC;
+
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class TelemetryMessageProducer {
 
-    @Autowired
-    private KafkaTemplate<String, Object> kafkaTemplate;
+    private final KafkaTemplate<String, TelemetryMessage> kafkaTemplate;
 
     private static final String TOPIC = "device_data";
 
-    @Scheduled(fixedRate = 10000)
+    @Scheduled(fixedRate = 15000)
     public void sendMessage() {
-        System.out.println("Here");
-        Map<String, Object> message = new HashMap<>();
-        message.put("timestamp", LocalDateTime.now().toString());
-        message.put("location", "MockLocation");
-        message.put("deviceId", UUID.randomUUID().toString());
-        message.put("name", "DeviceName");
+        TelemetryMessage message = new TelemetryMessage(
+                LocalDateTime.now(),
+                new TelemetryMessage.Location(generateRandomLatitude(), generateRandomLongitude()),
+                UUID.randomUUID().toString()
+        );
 
-        kafkaTemplate.send(TOPIC, message);
+        kafkaTemplate.send(TELEMETRY_TOPIC, message.getDeviceId(), message);
         System.out.println("Message sent: " + message);
-        log.debug("Message sent: {}", message);
+    }
+
+    private double generateRandomLatitude() {
+        return -90 + Math.random() * 180;
+    }
+
+    private double generateRandomLongitude() {
+        return -180 + Math.random() * 360;
     }
 }
