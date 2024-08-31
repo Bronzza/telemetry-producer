@@ -1,6 +1,6 @@
 package com.example.producer.config;
 
-import com.example.producer.model.TelemetryMessage;
+import model.TelemetryMessage;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.junit.jupiter.api.Test;
 import org.springframework.kafka.core.KafkaTemplate;

@@ -10,3 +10,6 @@ logging:
   level:
     org.springframework.kafka: DEBUG
     org.apache.kafka: DEBUG
+app:
+  deviceId: drone_12345
+  deviceName: drone_r2_d2

@@ -1,4 +1,4 @@
-package com.example.producer.model;
+package model;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -14,13 +14,5 @@ public class TelemetryMessage {
     private LocalDateTime timestamp;
     private Location location;
     private String deviceId;
-
-    @Data
-    @NoArgsConstructor
-    @AllArgsConstructor
-    public static class Location {
-        private double latitude;
-        private double longitude;
-    }
-
+    private String deviceName;
 }
