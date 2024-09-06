@@ -1,5 +1,6 @@
 package com.example.producer.config;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -16,6 +17,7 @@ class DeviceMetadataTest {
     private DeviceMetadata deviceMetadata;
 
     @Test
+    @Disabled("Duplicated logic with AppConfigTest")
     public void testDefaultValues() {
         assertEquals(TEST_DEFAULT_DEVICE_ID, deviceMetadata.getDeviceId());
         assertEquals(TEST_DEFAULT_DEVICE_NAME, deviceMetadata.getDeviceName());

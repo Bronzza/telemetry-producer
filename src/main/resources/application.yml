@@ -13,3 +13,9 @@ logging:
 app:
   deviceId: drone_12345
   deviceName: drone_r2_d2
+  startLatitude: 50.4501
+  startLongitude: 30.5234
+  endLatitude: 55.7558
+  endLongitude: 37.6173
+  speed: 0.14
+  interval: 15000

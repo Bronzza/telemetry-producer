@@ -1,3 +1,9 @@
 app:
   deviceId: testDefaultDeviceId
   deviceName: testDefaultDeviceName
+  startLatitude: 50.0
+  startLongitude: 50.0
+  endLatitude: 51.0
+  endLongitude: 51.0
+  speed: 0.1
+  interval: 10000

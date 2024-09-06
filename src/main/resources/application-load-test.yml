@@ -1,0 +1,7 @@
+spring:
+  kafka:
+    producer:
+      batch-size: 16384
+      linger-ms: 10
+    template:
+      default-topic: device_data_load_test
