@@ -9,9 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import model.Location;
 import model.TelemetryMessage;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.annotation.Profile;
-import org.springframework.context.event.EventListener;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -31,20 +29,42 @@ public class TelemetryMessageProducer {
     private final RouteDataProvider routeDataProvider;
     private final LocationCoordinatesCalculator locationCalculator;
 
+    private double currentPartOfRoute = 0.0;  // Track the current step of the route
+    private boolean routeCompleted = false;   // Flag to stop sending after route completion
+
+
     @Value("${app.interval}")
     private int interval;
 
-    public void sendMessage() throws InterruptedException {
+    @Scheduled(fixedRateString = "${app.interval}")
+    public void sendMessage() {
+        if (routeCompleted) {
+            log.info("Route is completed. No more messages to send.");
+            return;
+        }
+
         double distance = getDistance();
         double fraction = locationCalculator.calculateFraction(distance, routeDataProvider.getSpeed(), interval);
 
-        for (double currentPartOfRoute = 0; currentPartOfRoute < 1; currentPartOfRoute += fraction) {
-            TelemetryMessage message = createTelemetryMessage(currentPartOfRoute);
+        TelemetryMessage message = createTelemetryMessage(currentPartOfRoute);
+        kafkaTemplate.send(TELEMETRY_TOPIC, message.getDeviceId(), message);
+        log.info("Message sent at route step {}: {}", currentPartOfRoute, message);
 
-            kafkaTemplate.send(TELEMETRY_TOPIC, message.getDeviceId(), message);
-            Thread.sleep(interval);
-            log.info("Message send {}", message);
+        currentPartOfRoute += fraction;
+
+        if (currentPartOfRoute >= 1.0) {
+            routeCompleted = true;
         }
+    }
+
+    private TelemetryMessage createTelemetryMessage(double currentPartOfRoute) {
+        // Logic to create a telemetry message with the current position
+        Location location = locationCalculator.determineLocationCoordinates(
+                routeDataProvider.getStartLatitude(), routeDataProvider.getStartLongitude(),
+                routeDataProvider.getEndLatitude(), routeDataProvider.getEndLongitude(),
+                currentPartOfRoute
+        );
+        return createMessageApplyLocation(location);
     }
 
     private double getDistance() {
@@ -55,10 +75,10 @@ public class TelemetryMessageProducer {
                 routeDataProvider.getEndLongitude());
     }
 
-    private TelemetryMessage createTelemetryMessage(double currentFraction) {
+    private TelemetryMessage createMessageApplyLocation(Location location) {
         TelemetryMessage message = new TelemetryMessage(
                 LocalDateTime.now(),
-                getCurrentLocation(Double.valueOf(currentFraction)),
+                location,
                 deviceMetadata.getDeviceId(), deviceMetadata.getDeviceName()
         );
         return message;

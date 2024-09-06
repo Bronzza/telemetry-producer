@@ -95,7 +95,7 @@ class TelemetryMessageProducerTest {
 
 //        Left line commented, totaly valid line, but I prefer behavioral pattern (leave it as an valid example)
 //        verify(kafkaTemplate, times(1)).send(eq(KafkaConfig.TELEMETRY_TOPIC), anyString(), messageCaptor.capture());
-        then(kafkaTemplate).should(times(2)).send(eq(KafkaConfig.TELEMETRY_TOPIC), anyString(), messageCaptor.capture());
+        then(kafkaTemplate).should(times(1)).send(eq(KafkaConfig.TELEMETRY_TOPIC), anyString(), messageCaptor.capture());
 
         List<TelemetryMessage> allValues = messageCaptor.getAllValues();
         TelemetryMessage firstMessage = allValues.get(0);
@@ -103,8 +103,6 @@ class TelemetryMessageProducerTest {
         assertEquals(LocalDateTime.now().getHour(), firstMessage.getTimestamp().getHour());
         assertEquals(TEST_LATITUDE, firstMessage.getLocation().getLatitude());
         assertEquals(TEST_LONGITUDE, firstMessage.getLocation().getLongitude());
-        assertEquals(TEST_LATIDUTE_2, allValues.get(1).getLocation().getLatitude());
-        assertEquals(TEST_LONGITUDE_2, allValues.get(1).getLocation().getLongitude());
 
     }
 }
