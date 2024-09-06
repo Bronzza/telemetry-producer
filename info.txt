@@ -9,3 +9,12 @@ kafka-topics.sh --create --zookeeper zookeeper:2181 --replication-factor 1 --par
 kafka-topics.sh --alter --topic device_data_load_test --partitions 10 --zookeeper localhost:2181
 
 kafka-topics.sh --bootstrap-server localhost:9092 --describe --topic device_data_load_test
+
+
+docker build -f Dockerfile -t bronzzza/telemetry-producer-multistage:latest .
+docker build --no-cache -f Dockerfile -t bronzzza/telemetry-producer-multistage:latest .
+docker push bronzzza/telemetry-producer-multistage:latest
+
+
+docker tag bronzzza/telemetry-producer-pom:0.0.1-SNAPSHOT bronzzza/telemetry-producer-pom:latest
+docker push bronzzza/telemetry-producer-pom:latest
