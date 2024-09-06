@@ -11,7 +11,6 @@ import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
 
-@Profile({ "!test & !load-test" })
 @Slf4j
 @Component
 @RequiredArgsConstructor
@@ -23,11 +22,11 @@ public class MessageSenderEventListener {
     @EventListener(ApplicationReadyEvent.class)
     public void triggerOnStartup() throws InterruptedException {
         // Check if the 'test' or 'load-test' profile is active
-//        if (!isTestOrLoadTestProfileActive()) {
+        if (!isTestOrLoadTestProfileActive()) {
             producer.sendMessage();
-//        } else {
-//            log.info("Skipping sendMessage as test or load-test profile is active.");
-//        }
+        } else {
+            log.info("Skipping sendMessage as test or load-test profile is active.");
+        }
     }
 
     private boolean isTestOrLoadTestProfileActive() {
