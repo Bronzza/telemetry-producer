@@ -15,6 +15,14 @@ docker build -f Dockerfile -t bronzzza/telemetry-producer-multistage:latest .
 docker build --no-cache -f Dockerfile -t bronzzza/telemetry-producer-multistage:latest .
 docker push bronzzza/telemetry-producer-multistage:latest
 
+docker build --no-cache -f Dockerfile.no-multistage -t bronzzza/telemetry-producer-notstaged:latest .
+docker push bronzzza/telemetry-producer-notstaged:latest
 
+mvn clean package dockerfile:build
+mvn clean package dockerfile:build dockerfile:push
 docker tag bronzzza/telemetry-producer-pom:0.0.1-SNAPSHOT bronzzza/telemetry-producer-pom:latest
 docker push bronzzza/telemetry-producer-pom:latest
+
+
+docker build --no-cache -f Dockerfile -t bronzzza/telemetry-consumer:latest .
+docker push bronzzza/telemetry-consumer:latest

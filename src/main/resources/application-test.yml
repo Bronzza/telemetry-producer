@@ -7,3 +7,5 @@ app:
   endLongitude: 51.0
   speed: 0.1
   interval: 10000
+kafka:
+  bootstrap-servers: localhost:9092

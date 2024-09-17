@@ -12,3 +12,6 @@ COPY --from=build /app/target/producer-0.0.1-SNAPSHOT.jar ./producer-app.jar
 
 # Step 3: Specify the default command
 ENTRYPOINT ["java", "-jar", "producer-app.jar"]
+
+## Default command-line arguments. we can pass command line arguments using this lines below
+#CMD ["--app.deviceId=defaultId", "--app.deviceName=defaultName"]

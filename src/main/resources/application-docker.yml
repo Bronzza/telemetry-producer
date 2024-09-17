@@ -1,0 +1,4 @@
+kafka:
+  bootstrap-servers: ${KAFKA_BROKER_URL}
+  app:
+    interval: ${TELEMETRY_PRODUCER_INTERVAL}
