@@ -14,12 +14,12 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.kafka.core.KafkaTemplate;
-import org.springframework.test.context.ActiveProfiles;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
 import static com.example.producer.config.AppConfigTest.*;
+import static com.example.producer.config.KafkaConfigTest.TEST_DEFAULT_TOPIC;
 import static com.example.producer.util.SphericalInterpolatorTest.TEST_DISTANCE_KM;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.*;
@@ -46,6 +46,8 @@ class TelemetryMessageProducerTest {
     private RouteDataProvider routeDataProvider;
     @Mock
     private LocationCoordinatesCalculator locationCalculator;
+    @Mock
+    private KafkaConfig kafkaConfig;
     @Captor
     ArgumentCaptor<TelemetryMessage> messageCaptor;
     @Captor
@@ -61,6 +63,7 @@ class TelemetryMessageProducerTest {
         given(routeDataProvider.getEndLatitude()).willReturn(TEST_DEFAULT_END_LATIDUTE);
         given(routeDataProvider.getEndLongitude()).willReturn(TEST_DEFAULT_END_LONGITUDE);
         given(routeDataProvider.getSpeed()).willReturn(TEST_DEFAULT_SPEED);
+        given(kafkaConfig.getTopic()).willReturn(TEST_DEFAULT_TOPIC);
 
         given(locationCalculator.calculateDistance(
                 eq(TEST_DEFAULT_START_LATIDUTE),
@@ -94,8 +97,8 @@ class TelemetryMessageProducerTest {
         telemetryMessageProducer.sendMessage();
 
 //        Left line commented, totaly valid line, but I prefer behavioral pattern (leave it as an valid example)
-//        verify(kafkaTemplate, times(1)).send(eq(KafkaConfig.TELEMETRY_TOPIC), anyString(), messageCaptor.capture());
-        then(kafkaTemplate).should(times(1)).send(eq(KafkaConfig.TELEMETRY_TOPIC), anyString(), messageCaptor.capture());
+//        verify(kafkaTemplate, times(1)).send(eq(kafkaConfig.getTopic()), anyString(), messageCaptor.capture());
+        then(kafkaTemplate).should(times(1)).send(eq(kafkaConfig.getTopic()), anyString(), messageCaptor.capture());
 
         List<TelemetryMessage> allValues = messageCaptor.getAllValues();
         TelemetryMessage firstMessage = allValues.get(0);

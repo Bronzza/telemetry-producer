@@ -1,6 +1,7 @@
 package com.example.producer.service;
 
 import com.example.producer.config.DeviceMetadata;
+import com.example.producer.config.KafkaConfig;
 import com.example.producer.config.RouteDataProvider;
 //import com.example.producer.util.SphericalInterpolator;
 import com.example.producer.util.LocationCoordinatesCalculator;
@@ -16,8 +17,6 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 
-import static com.example.producer.config.KafkaConfig.TELEMETRY_TOPIC;
-
 @Slf4j
 @Service
 @Profile("!load-test")
@@ -28,6 +27,7 @@ public class TelemetryMessageProducer {
     private final DeviceMetadata deviceMetadata;
     private final RouteDataProvider routeDataProvider;
     private final LocationCoordinatesCalculator locationCalculator;
+    private final KafkaConfig kafkaConfig;
 
     private double currentPartOfRoute = 0.0;  // Track the current step of the route
     private boolean routeCompleted = false;   // Flag to stop sending after route completion
@@ -47,7 +47,7 @@ public class TelemetryMessageProducer {
         double fraction = locationCalculator.calculateFraction(distance, routeDataProvider.getSpeed(), interval);
 
         TelemetryMessage message = createTelemetryMessage(currentPartOfRoute);
-        kafkaTemplate.send(TELEMETRY_TOPIC, message.getDeviceId(), message);
+        kafkaTemplate.send(kafkaConfig.getTopic(), message.getDeviceId(), message);
         log.info("Message sent at route step {}: {}", currentPartOfRoute, message);
 
         currentPartOfRoute += fraction;

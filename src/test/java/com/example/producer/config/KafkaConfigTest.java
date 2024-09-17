@@ -1,3 +1,4 @@
+
 package com.example.producer.config;
 
 import model.TelemetryMessage;
@@ -19,15 +20,17 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @ActiveProfiles("test")
-class KafkaConfigTest {
+public class KafkaConfigTest {
+
+    public static final String TEST_DEFAULT_TOPIC = "TEST_TOPIC";
+    public static final String TEST_BOOTSTRAP_SERVER = "localhost:9092";
+
     private final KafkaConfig kafkaConfig = new KafkaConfig();
 
-    @Value("${kafka.bootstrap-servers:localhost:9092}") // Default to localhost for non-Docker environments
-    private String bootstrapServers;
-
     @BeforeEach
-    void setUp() {
-        kafkaConfig.setBootstrapServers(bootstrapServers);
+    void setup() {
+        kafkaConfig.setBootstrapServers(TEST_BOOTSTRAP_SERVER);
+        kafkaConfig.setTelemetry_topic(TEST_DEFAULT_TOPIC);
     }
 
     @Test
@@ -36,7 +39,7 @@ class KafkaConfigTest {
         assertNotNull(producerFactory);
 
         Map<String, Object> configProps = producerFactory.getConfigurationProperties();
-        assertEquals("localhost:9092", configProps.get(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG));
+        assertEquals(TEST_BOOTSTRAP_SERVER, configProps.get(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG));
         assertEquals(JsonSerializer.class, configProps.get(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG));
     }
 

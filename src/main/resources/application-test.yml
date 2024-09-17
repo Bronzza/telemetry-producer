@@ -9,3 +9,4 @@ app:
   interval: 10000
 kafka:
   bootstrap-servers: localhost:9092
+  topic: TEST_TOPIC

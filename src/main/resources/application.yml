@@ -3,6 +3,7 @@ spring:
     name: producer
   kafka:
     bootstrap-servers: localhost:9092
+    topic: device_data
     producer:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: org.springframework.kafka.support.serializer.JsonSerializer

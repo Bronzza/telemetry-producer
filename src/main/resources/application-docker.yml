@@ -1,4 +1,5 @@
 kafka:
   bootstrap-servers: ${KAFKA_BROKER_URL}
+  topic: ${KAFKA_TOPIC:device_data}
   app:
     interval: ${TELEMETRY_PRODUCER_INTERVAL}

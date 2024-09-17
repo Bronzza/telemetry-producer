@@ -1,5 +1,6 @@
 package com.example.producer.config;
 
+import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import model.TelemetryMessage;
@@ -23,7 +24,8 @@ import java.util.Map;
 @Setter
 public class KafkaConfig {
 
-    public final static String TELEMETRY_TOPIC = "device_data";
+    @Value("${kafka.topic:#{'device_data'}}")
+    private String telemetry_topic;
 
     @Value("${kafka.bootstrap-servers:localhost:9092}") // Default to localhost for non-Docker environments
     private String bootstrapServers;
@@ -43,5 +45,9 @@ public class KafkaConfig {
     public KafkaTemplate<String, TelemetryMessage> kafkaTemplate() {
         System.out.println("Kafka template created");
         return new KafkaTemplate<>(producerFactory());
+    }
+
+    public String getTopic() {
+        return telemetry_topic;
     }
 }
